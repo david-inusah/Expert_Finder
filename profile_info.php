@@ -30,7 +30,7 @@ if (isset($_GET['username'])) {
 	}
 
 	if (isset($_POST['lastname]'])) {
-		$firstname = $_POST['lastname'];
+		$lastname = $_POST['lastname'];
 		DB::query('UPDATE users SET lastname=:lastname WHERE id=:userid', array(':lastname'=>$lastname,':userid'=>$userid));
 	}
 
@@ -121,7 +121,7 @@ if (isset($_GET['username'])) {
       <!-- <img class="responsive-img" style="width: 250px;" src="images/fries.jpg" /> -->
       <!-- <div class="section"></div> -->
 
-      <h5 class="black-text">Account Details</h5>
+      <h5 class="black-text">Profile Details</h5>
 	<h6 class="green-text">Almost there. Just two more steps</h6>	      
       <!-- <h6 class="green-text"><?php echo $errormsg;?></h6> -->
       <!-- <div class="section"></div> -->
@@ -165,7 +165,7 @@ if (isset($_GET['username'])) {
 
             <div class='row'>
               <div class='input-field col s12'>
-                <input class='validate' type='text' name='worklocation' id='worklocation' />
+                <input class='validate' type='text' name='worklocation' id='worklocation'/>
                 <label for='worklocation'>Workshed Location</label>
               </div>
             </div>

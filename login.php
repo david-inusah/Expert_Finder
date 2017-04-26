@@ -15,6 +15,12 @@ if(isset($_POST['login'])){
 <head>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+  <script src="lib/SendBird.min.js"></script>
+  <script type="text/javascript">
+    var sb = new SendBird({
+    appId: APP_ID;
+});
+  </script>
   <style>
     body {
       display: flex;
