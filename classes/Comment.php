@@ -12,15 +12,22 @@ class Comment {
                 }
         }
         public static function displayComments($postId) {
-                $comments="";
-                $comments = DB::query('SELECT comments.comment, users.username FROM comments, users WHERE post_id = :postid AND comments.user_id = users.id', array(':postid'=>$postId));
+                $cmts="";
+                $comments = DB::query('SELECT comments.comment, users.firstname, users.lastname, users.profileimg FROM comments, users WHERE post_id = :postid AND comments.user_id = users.id', array(':postid'=>$postId));
                 foreach($comments as $comment) {
-                        $comments.= "<li style='height: 40px' class='collection-item avatar'>
-                                <i class='material-icons'>account_circle</i>
-                                <p>'".$comment['comment']." ~ ".$comment['username']."</p>
-                        </li>
-                        ";
+                        $firstname=$comment['firstname'];
+                        $lastname=$comment['lastname'];
+                        $profileimg=$comment['profileimg'];
+                        if (strlen($profileimg)==0) {
+                                $profileimg='images/profile.png';
+                        }
+                        $cmts.= "<li style='height: 40px' class='collection-item avatar'>
+                                <img src=".$profileimg." class='circle' style='width=10px;'> ".$comment['firstname']." ".$comment['lastname']."
+                                <p>".$comment['comment']."</p>
+                        </li>";
                 }
+
+                return $cmts;
         }
 }
 ?>

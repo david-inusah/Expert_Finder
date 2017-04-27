@@ -7,7 +7,6 @@ include('./classes/Comment.php');
 
 $userid="";
 $loggedInUsername="";
-$username="";
 $pid = "";
 $postimg = "";
 $postbody = "";
@@ -25,6 +24,7 @@ if (isset($_GET['username'])) {
 		$post=Post::getPost($_GET['postid']);
 		if (count($post)>0) {
 			$pid = $post[0]['id'];
+			// echo $pid;
 			if (strlen($post[0]['postimg'])>0) {
 				$postimg = $post[0]['postimg'];
 			}else{
@@ -35,8 +35,13 @@ if (isset($_GET['username'])) {
 			$ownerid = $post[0]['user_id'];
 		}
 	}
+	if (isset($_POST['comment'])) {
+		$commentBody= $_POST['comment'];
+		// echo $commentBody;
+		Comment::createComment($commentBody, $pid, $userid);
+	}
 }else{
-  die("<img align='middle' style='padding: 100px 400px;' src='images/404.jpg'>");
+	die("<img align='middle' style='padding: 100px 400px;' src='images/404.jpg'>");
 }
 
 	?>
@@ -81,9 +86,9 @@ if (isset($_GET['username'])) {
 					<p><?php echo $postbody;?></p>
 				</div>
 				<div class="card-action">
-				<a href="#"><img src="images/heart-empty.png" style="width:20px;"> 233</a>
+				<a href="#"><img src="images/heart-empty.png" style="width:20px; margin-left: 80px;"> Like</a>
 					<!-- Modal Trigger -->
-					<a class="modal-trigger" href="#modal1"><i class="material-icons" style="color: grey;margin-left: 40px; ">comment</i></a>
+					<a class="modal-trigger" href="#modal1"><i class="material-icons" style="color: grey;margin-left: 120px; ">comment</i> Comment</a>
 				</div>
 			</div>
 		</div>
@@ -91,44 +96,20 @@ if (isset($_GET['username'])) {
 </div>
 
 <!-- Modal Structure -->
-<div id="modal1" class="modal modal-fixed-footer">
-	<div class="modal-content" >
-		<h6>Comments</h6>
-		<ul style="width: 650px" class="collection">
-			<li style="height: 40px" class="collection-item avatar">
-				<i class="material-icons">account_circle</i>
-				<span class="title">Title</span>
-				<p>First Line</p>
-			</li>
-			<li style="height: 40px" class="collection-item avatar">
-				<i class="material-icons">account_circle</i>
-				<span class="title">Title</span>
-				<p>First Line</p>
-			</li>
-			<li style="height: 40px" class="collection-item avatar">
-				<i class="material-icons">account_circle</i>
-				<span class="title">Title</span>
-				<p>First Line</p>
-			</li>
-			<li style="height: 40px" class="collection-item avatar">
-				<i class="material-icons">account_circle</i>
-				<span class="title">Title</span>
-				<p>First Line</p>
-			</li>
-		</ul>
-	</div>
-	<div class="modal-footer">
-		<form class="col s12">
-			<div class="row">
-				<div class="input-field col s6">
-					<i class="material-icons prefix">account_circle</i>
-					<input id="icon_prefix" type="text" class="validate">
-					<!--           <label for="icon_prefix">Comment</label> -->
-					<input type="submit" name="comment" value="Comment">
-				</div>
-			</div>
-		</form>
-	</div>
-</div>     
+<div id="modal1" style="width:700px;" class="modal modal-fixed-footer">
+		<div class="modal-content" >
+			<h6>Comments</h6>
+			<ul style="width: 650px" class="collection">
+				<?php echo Comment::displayComments($pid) ?>
+			</ul>
+		</div>
+		<div class="modal-footer">
+		<form class="col s12" method="post" style="width: 650px" action="post.php?comment&username=<?php echo $username; ?>&postid=<?php echo $pid; ?>">	<i class="material-icons prefix">account_circle</i>
+						<input class='validate' type='text' name='comment' id='comment' />
+						<!-- <label for='firstname'>Firstname</label> -->
+						<button style="width: 140px;" type='submit' name='post.php' class='col s12 btn btn-small waves-effect red darken-2'>Comment</button>
+			</form>
+		</div>
+	</div>   
 </body>
 </html>

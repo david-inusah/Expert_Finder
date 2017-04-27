@@ -131,10 +131,10 @@ if (isset($_GET['username'])) {
         <div class="z-depth-1 transparent row" style="display: inline-block; padding: 32px 48px 0px 48px; border: 1px solid #EEE;">
 
           <form class="col s12" method="post" style="width: 800px" action="profile_info.php?username=<?php echo $username; ?>">
-            <div class='row'>
+            <!-- <div class='row'>
               <div class='col s12'>
               </div>
-            </div>
+            </div> -->
             <div class='row'>
               <div class='input-field col s12'>
                 <input class='validate' type='text' name='firstname' id='firstname' />
