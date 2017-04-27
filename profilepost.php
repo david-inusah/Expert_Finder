@@ -7,6 +7,7 @@ include('./classes/Comment.php');
 
 $userid="";
 $loggedInUsername="";
+$username="";
 $pid = "";
 $postimg = "";
 $postbody = "";
@@ -66,11 +67,12 @@ if (isset($_GET['username'])) {
 	</head>
 
 	<body>
+
 <div class="container">
 	<div class="row">
 		<div class="col s6 offset-s3">
 			<div class="card">
-			<span class="card-title" style="width:20px; height: 10px;"><a href="index.php"><font style="font-size: 15px; margin-left: 20px">Return</font></a></span>
+			<span class="card-title" style="width:20px; height: 10px;"><a href="profile.php?username=<?php echo $username; ?>"><font style="font-size: 15px; margin-left: 20px">Return</font></a></span>
 				<div style="height:380px; margin-top: 30px" class="card-image">
 					
 					<img style="height:350px;width:90%; margin: 0 auto;" src="<?php echo $postimg;?>">
@@ -93,7 +95,26 @@ if (isset($_GET['username'])) {
 	<div class="modal-content" >
 		<h6>Comments</h6>
 		<ul style="width: 650px" class="collection">
-			<?php Comment::displayComments($pid) ?>
+			<li style="height: 40px" class="collection-item avatar">
+				<i class="material-icons">account_circle</i>
+				<span class="title">Title</span>
+				<p>First Line</p>
+			</li>
+			<li style="height: 40px" class="collection-item avatar">
+				<i class="material-icons">account_circle</i>
+				<span class="title">Title</span>
+				<p>First Line</p>
+			</li>
+			<li style="height: 40px" class="collection-item avatar">
+				<i class="material-icons">account_circle</i>
+				<span class="title">Title</span>
+				<p>First Line</p>
+			</li>
+			<li style="height: 40px" class="collection-item avatar">
+				<i class="material-icons">account_circle</i>
+				<span class="title">Title</span>
+				<p>First Line</p>
+			</li>
 		</ul>
 	</div>
 	<div class="modal-footer">

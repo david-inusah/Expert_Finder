@@ -4,13 +4,14 @@ include('./classes/Login.php');
 include('./classes/Image.php');
 $username="";
 $userid="";
-$result="";
+$result1="";
+$result2="";
 if (Login::isLoggedIn()) {
 	$userid = Login::isLoggedIn();
 	    $username = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
 
 	if (isset($_POST['uploadprofileimg'])) {
-	$result.=Image::uploadImage('profileimg', "UPDATE users SET profileimg = :profileimg WHERE id=:userid", array(':userid'=>$userid));
+	$result2.=Image::uploadImage('profileimg', "UPDATE users SET profileimg = :profileimg WHERE id=:userid", array(':userid'=>$userid));
 }
  if (isset($_POST['changepassword'])) {
                 $oldpassword = $_POST['oldpassword'];
@@ -20,13 +21,13 @@ if (Login::isLoggedIn()) {
                         if ($newpassword == $newpasswordrepeat) {
                                 if (strlen($newpassword) >= 6 && strlen($newpassword) <= 60) {
                                         DB::query('UPDATE users SET password=:newpassword WHERE id=:userid', array(':newpassword'=>password_hash($newpassword, PASSWORD_BCRYPT), ':userid'=>$userid));
-                                        $result.= 'Done!';
+                                        $result1.= 'Done!';
                                 }
                         } else {
-                                $result.= 'Passwords don\'t match!';
+                                $result1.= 'Passwords don\'t match!';
                         }
                 } else {
-                        $result.= 'Incorrect old password!';
+                        $result1.= 'Incorrect old password!';
                 }
         }
 } else {
@@ -42,6 +43,8 @@ if (Login::isLoggedIn()) {
 	<meta content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width" name="viewport">
 
 	<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+	<link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
 
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js"
 	integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
@@ -66,7 +69,7 @@ if (Login::isLoggedIn()) {
 		<div class="card grey lighten-5" style="width: 90%;height: 470px;margin:0 auto; padding-top: 10px;padding-left: 10px">
 		<h6 class="left-align" style="padding-bottom: 50px"><a href="profile.php?username=<?php echo $username; ?>">To Profile page</a></h6>
 			<div class="grey lighten-2 card-panel" style="height:100px;width:70%; margin:0 auto;margin-bottom: 70px">
-			<a class="modal-trigger" href="#modal1"><h6 class="center-align"><i class="tiny material-icons">edit</i>   Password change</h6></a><h6 class="center-align" style="color: #00e676  ;"><?php echo $result;?></h6>
+			<a class="modal-trigger" href="#modal1"><h6 class="center-align"><i class="tiny material-icons">edit</i>   Password change</h6></a><h6 class="center-align" style="color: #00e676  ;"><?php echo $result1;?></h6>
 			<div id="modal1" class="modal modal-fixed-footer">
 				<div class="modal-content">
 					<h6>Change your Password</h6><br><br><br>
@@ -83,13 +86,13 @@ if (Login::isLoggedIn()) {
 		</div>    
 
 			<div class="grey lighten-2 card-panel" style="height:100px;width:70%; margin:0 auto;">
-			<a class="modal-trigger" href="#modal2" style="height:100px;width:70%"><h6 class="center-align"><i class="tiny material-icons">edit</i>   Upload new profile picture</h6></a><h6 class="center-align" style="color: #00e676  ;"><?php echo $result;?></h6>
+			<a class="modal-trigger" href="#modal2" style="height:100px;width:70%"><h6 class="center-align"><i class="tiny material-icons">edit</i>   Upload new profile picture</h6></a><h6 class="center-align" style="color: #00e676  ;"><?php echo $result2;?></h6>
 			<div id="modal2" class="modal modal-fixed-footer">
 				<div class="modal-content">
 	<form action="my-account.php" method="post" enctype="multipart/form-data">
 		<h6>Upload a profile image</h6>
 		<br><br><div style="text-align: center;">
-			<img style="height: 200px" src="images/profile.png">
+			<img style="height: 150px" src="images/profile.png">
 		<br><br><br><br><input type="file" name="profileimg">
 						</div>
 		</div>

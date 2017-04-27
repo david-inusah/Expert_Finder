@@ -38,6 +38,8 @@ if (Login::isLoggedIn()) {
 
    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+   <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+
    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
    crossorigin="anonymous"></script>    

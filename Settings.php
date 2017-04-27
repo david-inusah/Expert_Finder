@@ -3,9 +3,8 @@ define("HOST","localhost");
 define("DBNAME","patatte");
 define("DBUSERNAME","root");
 define("DBPASSWORD","");
-define("IMGURACCESSURL", "https://imgur.com/#access_token=9a4b5d399d63a9d2af16081aca7e0a2ea85d9105&expires_in=2419200&token_type=bearer&refresh_token=b6d787f2ca6eaba384ce6af08c55dad9ff749208&account_username=davidinusah&account_id=56273193");
-define("IMGURACCESSTOKEN","9a4b5d399d63a9d2af16081aca7e0a2ea85d9105");
-define("IMGURREFRESHTOKEN","b6d787f2ca6eaba384ce6af08c55dad9ff749208");
+define("IMGURACCESSTOKEN","a38c6da97be59082b66d49acb4495489aeb26428");
+define("IMGURREFRESHTOKEN","da63e241b14250503ac45c43d49cf2ac84820939");
 define("GOOGLEAPIKEY","AIzaSyCQcqwU8Akzv93zlX5EJEeKwDYT12D3I3Y");
 define("SBAPP_ID","2EA29892-FFFF-479D-B263-EBE6F357F714");
 ?>

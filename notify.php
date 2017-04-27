@@ -46,7 +46,7 @@ if (isset($_GET['rejected'])) {
     }
 }
 if (DB::query('SELECT * FROM notifications WHERE receiver=:userid', array(':userid'=>$userid))) {
-    $notification = DB::query('SELECT * FROM notifications WHERE receiver=:userid ORDER BY id DESC', array(':userid'=>$userid));
+    $notification = DB::query('SELECT * FROM notifications WHERE receiver=:userid AND seen=0 ORDER BY id DESC', array(':userid'=>$userid));
     foreach($notification as $n) {
         if ($n['type'] == 1) {
             $senderid = DB::query('SELECT id FROM users WHERE id=:senderid', array(':senderid'=>$n['sender']))[0]['id'];
@@ -156,7 +156,13 @@ if (DB::query('SELECT * FROM notifications WHERE receiver=:userid', array(':user
 </nav>
 <h4>Notifications</h4>
 <?php
-echo $notifications;
+if (strlen($notifications)>0) {
+    echo $notifications;
+}else{
+     echo '<div style="height: 100%; width: 100%; text-align: center;">
+    <br><br><font style="font-size:50px; color: #9e9e9e;">Whoop! No new notifications for you.  </font>
+  </div>';
+}
 ?>
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="js/materialize.min.js"></script>

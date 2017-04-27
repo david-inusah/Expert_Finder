@@ -77,6 +77,7 @@ if (isset($_POST['collaboration_searchbox'])) {
 
 		<!-- Compiled and minified CSS -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
+		<link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
 
 		<script type="text/javascript" src="js/modals.js" ></script>
 

@@ -85,16 +85,17 @@ public static function displayProfilePagePosts($userid, $username, $loggedInUser
     $posts = "";
     foreach($dbposts as $p) {
         if (!DB::query('SELECT post_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$p['id'], ':userid'=>$loggedInUserId))) {
-
-           $posts .= '<div class="col s2" style="height:400px;">
+            $username = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
+           $posts .= '<a href="profilepost.php?username='.$username.'&postid='.$p['id'].'">
+           <div class="col s2" style="height:400px;">
               <div class="card hoverable grey lighten-5 z-depth-1">
                   <div style="height:200px;" class="card-image responsive-img">';
               // echo $p['postimg'];
                     if ($p['postimg']!="") {
                         // echo $p['postimg'];
-                        $posts.='<img style="width:180px; margin:0 auto;padding-top:10px;" src="'.$p['postimg'].'">';
+                        $posts.='<img style="width:180px;height:200px; margin:0 auto;padding-top:10px;" src="'.$p['postimg'].'">';
                     }else{
-                        $posts.='<img style="width:180px; margin:0 auto; padding-top:10px;" src="images/nopreview.png">';
+                        $posts.='<img style="width:180px;height:200px; margin:0 auto; padding-top:10px;" src="images/nopreview.png">';
                     }
                     $posts.='</div>';
                     if ($p['body']!="") {
@@ -111,17 +112,19 @@ public static function displayProfilePagePosts($userid, $username, $loggedInUser
                     $posts .='</div>
                 </div>
             </div>
+            </a>
             ';
         } else {
-           $posts .= '<div class="col s2" style="height:400px;">
+           $posts .= '<a href="profilepost.php?username='.$username.'&postid='.$p['id'].'">
+           <div class="col s2" style="height:400px;">
               <div class="card grey hoverable lighten-5 z-depth-1">
                   <div style="height:200px;" class="card-image responsive-img">';
               // echo $p['postimg'];
                     if ($p['postimg']!="") {
                         // echo $p['postimg'];
-                        $posts.='<img style="width:180px; margin:0 auto;padding-top:10px;" src="'.$p['postimg'].'">';
+                        $posts.='<img style="width:180px;height:200px; margin:0 auto;padding-top:10px;" src="'.$p['postimg'].'">';
                     }else{
-                        $posts.='<img style="width:180px; margin:0 auto; padding-top:10px;" src="images/nopreview.png">';
+                        $posts.='<img style="width:180px;height:200px; margin:0 auto; padding-top:10px;" src="images/nopreview.png">';
                     }
                     $posts.='</div>';
                     if ($p['body']!="") {
@@ -138,6 +141,7 @@ public static function displayProfilePagePosts($userid, $username, $loggedInUser
                     $posts .='</div>
                 </div>
             </div>
+            </a>
             ';
         }
     }
@@ -152,7 +156,7 @@ private static function getNewsFeedPosts($userid){
         ORDER BY posts.id DESC;', array(':userid'=>$userid));
     return $followingposts;    
 }
-private static function getPost($postid){
+public static function getPost($postid){
   $post=array();
    if (DB::query('SELECT id FROM posts WHERE id=:postid',array(':postid'=>$postid))) {
       $post = DB::query('SELECT id, body, postimg, likes, user_id FROM posts
@@ -174,16 +178,16 @@ public static function  displayNewsFeedPosts($username, $loggedInUserId) {
         $lastname=DB::query('SELECT lastname FROM users WHERE username=:username', array(':username'=>$postowner))[0]['lastname'];
 
         if (!DB::query('SELECT post_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$p['id'], ':userid'=>$userid))) {
-           $posts .= '<a href="post.php?usernameusername='.$postowner.'&postid='.$p['id'].'">
+           $posts .= '<a href="post.php?username='.$postowner.'&postid='.$p['id'].'">
             <div class="col s2" style="height:400px;">
               <div class="card hoverable grey lighten-5 z-depth-1">
                   <div style="height:200px;" class="card-image responsive-img">';
               // echo $p['postimg'];
                     if ($p['postimg']!="") {
                         // echo $p['postimg'];
-                        $posts.='<img style="width:180px; margin:0 auto;padding-top:10px;" src="'.$p['postimg'].'">';
+                        $posts.='<img style="width:180px;height:200px; margin:0 auto;padding-top:10px;" src="'.$p['postimg'].'">';
                     }else{
-                        $posts.='<img style="width:180px; margin:0 auto; padding-top:10px;" src="images/nopreview.png">';
+                        $posts.='<img style="width:180px;height:200px; margin:0 auto; padding-top:10px;" src="images/nopreview.png">';
                     }
                     $posts.='</div>
                      <h6 style="text-align:center;" class="grey-text text darken-4">by <b><a class="orange-text text darken-4" href="profile.php?username='.$postowner.'">'.$firstname.' '.$lastname.'</a></b></h6>';
@@ -207,9 +211,9 @@ public static function  displayNewsFeedPosts($username, $loggedInUserId) {
               // echo $p['postimg'];
                     if ($p['postimg']!="") {
                         // echo $p['postimg'];
-                        $posts.='<img style="width:180px; margin:0 auto;padding-top:10px;" src="'.$p['postimg'].'">';
+                        $posts.='<img style="width:180px; height:200px; margin:0 auto;padding-top:10px;" src="'.$p['postimg'].'">';
                     }else{
-                        $posts.='<img style="width:180px; margin:0 auto; padding-top:10px;" src="images/nopreview.png">';
+                        $posts.='<img style="width:180px; height:200px;margin:0 auto; padding-top:10px;" src="images/nopreview.png">';
                     }
                     $posts.='</div>
                     <h6 style="text-align:center;" class="grey-text text darken-4">by <b><a class="orange-text text darken-4" href="profile.php?username='.$postowner.'">'.$firstname.' '.$lastname.'</a></b></h6>';
