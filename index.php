@@ -7,6 +7,7 @@ include('./classes/Comment.php');
 $showTimeline = False;
 $username="";
 $userid="";
+
 if (Login::isLoggedIn()) {
   $userid = Login::isLoggedIn();
   if (DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))) {
@@ -16,9 +17,9 @@ if (Login::isLoggedIn()) {
   }else {
     die("<img align='middle' style='padding: 100px 400px;' src='images/404.jpg'>");
   }
- if (isset($_GET['postid']) && isset($_GET['like'])) {
-  Post::likePost($_GET['postid'], $userid);
-}
+  if (isset($_GET['postid']) && isset($_GET['like'])) {
+    Post::likePost($_GET['postid'], $userid);
+  }
     // if (isset($_POST['comment'])) {
     //     Comment::createComment($_POST['commentbody'], $_GET['postid'], $userid);
     // }
@@ -27,6 +28,7 @@ if (Login::isLoggedIn()) {
     $tosearch = explode(" ", $_POST['searchbox']);
     Search::userSearch($tosearch);
   }
+
 
   ?>
   <!DOCTYPE html>
@@ -58,32 +60,15 @@ if (Login::isLoggedIn()) {
 
    <style type="text/css">
      #search {
-    display: none;
-    margin-bottom: 0px;
-    border-top: 1px solid #111;
-    border-bottom: 1px solid #111;
-}
-   </style>
-   <script type="text/javascript">
-     <script>
-// Toggle search
+      display: none;
+      margin-bottom: 0px;
+      border-top: 1px solid #111;
+      border-bottom: 1px solid #111;
+    }
+  </style>
+</head>
 
-    $('a#toggle-search').click(function()
-    {
-        var search = $('div#search');
-
-        search.is(":visible") ? search.slideUp() : search.slideDown(function()
-        {
-            search.find('input').focus();
-        });
-
-        return false;
-    });
-</script>
-   </script>
- </head>
-
- <body>
+<body>
 
   <nav>
     <div class="nav-wrapper black darken-1"">
@@ -107,17 +92,6 @@ if (Login::isLoggedIn()) {
     </div>
   </nav>
 
-  <div id="search" class="row white-text grey darken-3" >
-
-    <div class="container">
-        <form method="get" action="https://www.google.com/search">
-            <input class="form-control" type="text" placeholder="Search ..." name="q"></input>
-
-            <input type="hidden" value="makoframework.com" name="as_sitesearch"></input>
-        </form>
-    </div>
-</div>
-
   <h3>News Feed</h3>
   <?php
   $posts = Post::displayNewsFeedPosts($username, $userid);
@@ -128,6 +102,7 @@ if (Login::isLoggedIn()) {
     <br><br><font style="font-size:50px; color: #bdbdbd;">No posts yet</font>
   </div>';
 }}
+
 ?>
 
 

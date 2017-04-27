@@ -12,7 +12,7 @@ $requestedCollaboration = False;
 $posts="";
 $skills="";
 $profileimg="";
-// $requestid
+
 if (isset($_GET['username'])) {
   $userid = Login::isLoggedIn();
   if (DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))) {
@@ -267,7 +267,7 @@ if ($userid == $followerid) {
     <br><br><font style="font-size:50px; color: #bdbdbd;">No posts yet</font>
   </div>';
 }
-?>
+?>  
 </div>
 
 </div>

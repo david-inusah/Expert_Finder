@@ -43,7 +43,7 @@ if (isset($_GET['username'])) {
 		$commentBody= $_POST['comment'];
 		Comment::createComment($commentBody, $pid, $userid);
 	}
-	if (isset($_POST['like'])) {
+	if (isset($_GET['like'])) {
 		$likeStatus = Post::likePost($pid, $userid);
 		// echo $likeStatus;
 	}
@@ -82,9 +82,9 @@ if (isset($_GET['username'])) {
 	<div class="container">
 		<div class="row">
 			<div class="col s6 offset-s3">
-				<div class="card">
+				<div class="card" style="margin-top: 40px">
 					<span class="card-title" style="width:20px; height: 10px;"><a href="index.php"><font style="font-size: 15px; margin-left: 20px">Return</font></a></span>
-					<div style="height:380px; margin-top: 30px" class="card-image">
+					<div style="height:350px; margin-top: 30px" class="card-image">
 
 						<img style="height:350px;width:90%; margin: 0 auto;" src="<?php echo $postimg;?>">
 					</div>

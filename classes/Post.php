@@ -30,7 +30,7 @@ public static function createImgPost($postbody, $loggedInUserId, $profileUserId)
             $s = $loggedInUserId;
             $r = DB::query('SELECT id FROM users WHERE username=:username', array(':username'=>$key))[0]['id'];
             if ($r != 0) {
-                DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender, :extra)', array(':type'=>$n["type"], ':receiver'=>$r, ':sender'=>$s, ':extra'=>$n["extra"]));
+                DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender, :extra, 0)', array(':type'=>$n["type"], ':receiver'=>$r, ':sender'=>$s, ':extra'=>$n["extra"]));
             }
         }
     }
@@ -59,11 +59,13 @@ public static function likePost($postId, $likerId) {
         DB::query('UPDATE posts SET likes=likes+1 WHERE id=:postid', array(':postid'=>$postId));
         DB::query('INSERT INTO post_likes VALUES (\'\', :postid, :userid)', array(':postid'=>$postId, ':userid'=>$likerId));
         Notify::createLikesNotify($postId);
-        $result='like';
+        $result='unlike';
+        // echo 'say something i like';
     } else {
         DB::query('UPDATE posts SET likes=likes-1 WHERE id=:postid', array(':postid'=>$postId));
         DB::query('DELETE FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$postId, ':userid'=>$likerId));
-        $result='unlike';
+        $result='like';
+        // echo 'say something i unlike';
     }
     return $result;
 }
@@ -90,6 +92,7 @@ public static function displayProfilePagePosts($userid, $username, $loggedInUser
     foreach($dbposts as $p) {
             $username = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
             $comments = DB::query('SELECT count(id) FROM comments WHERE post_id=:pid',array(':pid'=>$p['id']))[0]['count(id)'];
+            $likes = DB::query('SELECT count(id) FROM post_likes WHERE post_id=:pid',array(':pid'=>$p['id']))[0]['count(id)'];
            $posts .= '<a href="profilepost.php?username='.$username.'&postid='.$p['id'].'">
            <div class="col s2" style="height:400px;">
               <div class="card hoverable grey lighten-5 z-depth-1">
@@ -101,36 +104,26 @@ public static function displayProfilePagePosts($userid, $username, $loggedInUser
                     }else{
                         $posts.='<img style="width:180px;height:200px; margin:0 auto; padding-top:10px;" src="images/nopreview.png">';
                     }
-                    $posts.='</div>';
+                    $posts.='</div></a>';
                     if ($p['body']!="") {
-                       $posts.='<div class="card-content">
+                       $posts.='<div class="card-content black-text">
                       <p>'.self::link_add($p['body']).'</p>
                   </div>';
                     }
                     
                   $posts.='<div class="card-action">
-                      <img src="images/heart-empty.png" style="width:10px;"> '.$p['likes'].'
+                      <img src="images/heart.png" style="width:10px;"> '.$likes.'
                       <i class="tiny grey-text material-icons" style="margin-left: 20px;">comment</i> '.$comments;
                       if ($userid == $loggedInUserId) {
                         $posts .='<a href="profile.php?deletepost&username='.$username.'&postid='.$p['id'].'" style="margin-left: 15px;"><i class="tiny grey-text material-icons">delete</i></a>';
                     }
                     $posts .='</div>
                 </div>
-            </div>
-            </a>
-            ';
+            </div>';
     }
     return $posts;
 }
 
-private static function getNewsFeedPosts($userid){
-    $followingposts = DB::query('SELECT posts.id, posts.body, posts.postimg, posts.likes, users.`username`, posts.user_id FROM users, posts, followers
-        WHERE posts.user_id = followers.user_id
-        AND users.id = posts.user_id
-        AND follower_id = :userid
-        ORDER BY posts.id DESC;', array(':userid'=>$userid));
-    return $followingposts;    
-}
 public static function getPost($postid){
   $post=array();
    if (DB::query('SELECT id FROM posts WHERE id=:postid',array(':postid'=>$postid))) {
@@ -138,6 +131,15 @@ public static function getPost($postid){
         WHERE posts.id = :postid;', array(':postid'=>$postid));
    }
     return $post;    
+}
+
+private static function getNewsFeedPosts($userid){
+    $followingposts = DB::query('SELECT posts.id, posts.body, posts.postimg, posts.likes, users.`username`, profileimg, posts.user_id FROM users, posts, followers
+        WHERE posts.user_id = followers.user_id
+        AND users.id = posts.user_id
+        AND follower_id = :userid
+        ORDER BY posts.id DESC;', array(':userid'=>$userid));
+    return $followingposts;    
 }
 
 public static function  displayNewsFeedPosts($username, $loggedInUserId) {
@@ -149,10 +151,11 @@ public static function  displayNewsFeedPosts($username, $loggedInUserId) {
         $userid=$p['user_id'];
         $postowner=$p['username'];
         $comments = DB::query('SELECT count(id) FROM comments WHERE post_id=:pid',array(':pid'=>$p['id']))[0]['count(id)'];
+        $likes = DB::query('SELECT count(id) FROM post_likes WHERE post_id=:pid',array(':pid'=>$p['id']))[0]['count(id)'];
         $firstname= DB::query('SELECT firstname FROM users WHERE username=:username', array(':username'=>$postowner))[0]['firstname'];
         $lastname=DB::query('SELECT lastname FROM users WHERE username=:username', array(':username'=>$postowner))[0]['lastname'];
            $posts .= '<a href="post.php?username='.$postowner.'&postid='.$p['id'].'">
-            <div class="col s2" style="height:400px;">
+            <div class="col s2" style="height:450px;">
               <div class="card hoverable grey lighten-5 z-depth-1">
                   <div style="height:200px;" class="card-image responsive-img">';
               // echo $p['postimg'];
@@ -162,8 +165,13 @@ public static function  displayNewsFeedPosts($username, $loggedInUserId) {
                     }else{
                         $posts.='<img style="width:180px;height:200px; margin:0 auto; padding-top:10px;" src="images/nopreview.png">';
                     }
+                    if ($p['profileimg']!="") {
                     $posts.='</div>
-                     <h6 style="text-align:center;" class="grey-text text darken-4">by <b><a class="orange-text text darken-4" href="profile.php?username='.$postowner.'">'.$firstname.' '.$lastname.'</a></b></h6>';
+                     <br><a class="grey-text text align-center" style="margin-left:30px;" href="profile.php?username='.$postowner.'"><img class="circle" style="width:30px" src="'.$p['profileimg'].'"><span>'.$firstname.' '.$lastname.'</span></a>';
+                   }else{
+                    $posts.='</div></a>
+                     <br><a class="grey-text text" class="align-center;" style="margin-left:30px;" href="profile.php?username='.$postowner.'"><img class="circle" style="width:30px" src="images/profile.png"><span>'.$firstname.' '.$lastname.'</span></a>';
+                   }
                     if ($p['body']!="") {
                        $posts.='<div class="card-content">
                       <p>'.self::link_add($p['body']).'</p>
@@ -171,12 +179,11 @@ public static function  displayNewsFeedPosts($username, $loggedInUserId) {
                     }
                     
                   $posts.='<div class="card-action">
-                      <img src="images/heart.png" style="width:10px;"> '.$p['likes'].'
+                      <img src="images/heart.png" style="width:10px;"> '.$likes.'
                       <i class="tiny grey-text material-icons" style="margin-left: 95px;">comment</i> '.$comments.'
                       </div>
                 </div>
-            </div>
-           </a>';
+            </div>';
     }
     return $posts;
 }

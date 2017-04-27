@@ -8,6 +8,7 @@ include('./classes/RequestCollaboration.php');
 $username="";
 $response="";
 $requestid="";
+$chat=False;
 if (Login::isLoggedIn()) {
     $userid = Login::isLoggedIn();
     if (DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))) {
@@ -28,8 +29,9 @@ if (isset($_GET['accepted'])) {
     if (RequestCollaboration::acceptRequest($requestid)) {
                 // echo "we did it!";
         Notify::createRequestAcceptedNotify($userid,$receiverid);
+        $chat= True;
     }else{
-                // echo "did not update db";
+        $chat=False;
     }
 }
 if (isset($_GET['rejected'])) {
@@ -163,6 +165,8 @@ if (strlen($notifications)>0) {
     <br><br><font style="font-size:50px; color: #9e9e9e;">Whoop! No new notifications for you.  </font>
   </div>';
 }
+
+setcookie($chat);
 ?>
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="js/materialize.min.js"></script>

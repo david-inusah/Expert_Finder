@@ -71,12 +71,12 @@ public static function createRequestNotify($sender, $receiver,$requestid){
 
 public static function createRequestAcceptedNotify($sender, $receiver){
         DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender, :extra,0)', array(':type'=>6, ':receiver'=>$receiver, ':sender'=>$sender, ':extra'=>""));
-        echo "we did it again";
+        // echo "we did it again";
 }
 
 public static function createRequestRejectedNotify($sender, $receiver){
         DB::query('INSERT INTO notifications VALUES (\'\', :type, :receiver, :sender, :extra,0)', array(':type'=>7, ':receiver'=>$receiver, ':sender'=>$sender, ':extra'=>""));
-        echo "we did it again";
+        // echo "we did it again";
 }
 
 }

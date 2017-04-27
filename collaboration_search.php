@@ -8,6 +8,7 @@ include('./classes/Notify.php');
 $userid="";
 $username="";
 $results="";
+
 if (Login::isLoggedIn()) {
 	$userid = Login::isLoggedIn();
 	if (DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))) {
