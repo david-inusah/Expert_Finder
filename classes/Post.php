@@ -54,14 +54,18 @@ public static function deletePost($postid, $followerid){
 }
 
 public static function likePost($postId, $likerId) {
+  $result="";
     if (!DB::query('SELECT user_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$postId, ':userid'=>$likerId))) {
         DB::query('UPDATE posts SET likes=likes+1 WHERE id=:postid', array(':postid'=>$postId));
         DB::query('INSERT INTO post_likes VALUES (\'\', :postid, :userid)', array(':postid'=>$postId, ':userid'=>$likerId));
         Notify::createLikesNotify($postId);
+        $result='like';
     } else {
         DB::query('UPDATE posts SET likes=likes-1 WHERE id=:postid', array(':postid'=>$postId));
         DB::query('DELETE FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$postId, ':userid'=>$likerId));
+        $result='unlike';
     }
+    return $result;
 }
 public static function link_add($text) {
     $text = explode(" ", $text);
@@ -84,8 +88,8 @@ public static function displayProfilePagePosts($userid, $username, $loggedInUser
     $dbposts = self::getProfilePagePosts($userid);
     $posts = "";
     foreach($dbposts as $p) {
-        if (!DB::query('SELECT post_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$p['id'], ':userid'=>$loggedInUserId))) {
             $username = DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))[0]['username'];
+            $comments = DB::query('SELECT count(id) FROM comments WHERE post_id=:pid',array(':pid'=>$p['id']))[0]['count(id)'];
            $posts .= '<a href="profilepost.php?username='.$username.'&postid='.$p['id'].'">
            <div class="col s2" style="height:400px;">
               <div class="card hoverable grey lighten-5 z-depth-1">
@@ -105,45 +109,16 @@ public static function displayProfilePagePosts($userid, $username, $loggedInUser
                     }
                     
                   $posts.='<div class="card-action">
-                      <a class="grey-text darken-4" href="profile.php?like&username='.$username.'&postid='.$p['id'].'"><img src="images/heart-empty.png" style="width:10px;"> '.$p['likes'].'</a>';
+                      <img src="images/heart-empty.png" style="width:10px;"> '.$p['likes'].'
+                      <i class="tiny grey-text material-icons" style="margin-left: 20px;">comment</i> '.$comments;
                       if ($userid == $loggedInUserId) {
-                        $posts .='<a href="profile.php?deletepost&username='.$username.'&postid='.$p['id'].'" style="float:right"><i class="tiny grey-text material-icons">delete</i></a>';
+                        $posts .='<a href="profile.php?deletepost&username='.$username.'&postid='.$p['id'].'" style="margin-left: 15px;"><i class="tiny grey-text material-icons">delete</i></a>';
                     }
                     $posts .='</div>
                 </div>
             </div>
             </a>
             ';
-        } else {
-           $posts .= '<a href="profilepost.php?username='.$username.'&postid='.$p['id'].'">
-           <div class="col s2" style="height:400px;">
-              <div class="card grey hoverable lighten-5 z-depth-1">
-                  <div style="height:200px;" class="card-image responsive-img">';
-              // echo $p['postimg'];
-                    if ($p['postimg']!="") {
-                        // echo $p['postimg'];
-                        $posts.='<img style="width:180px;height:200px; margin:0 auto;padding-top:10px;" src="'.$p['postimg'].'">';
-                    }else{
-                        $posts.='<img style="width:180px;height:200px; margin:0 auto; padding-top:10px;" src="images/nopreview.png">';
-                    }
-                    $posts.='</div>';
-                    if ($p['body']!="") {
-                       $posts.='<div class="card-content">
-                      <p>'.self::link_add($p['body']).'</p>
-                  </div>';
-                    }
-                    
-                  $posts.='<div class="card-action">
-                      <a class="grey-text darken-4" href="profile.php?like&username='.$username.'&postid='.$p['id'].'"><img src="images/heart.png" style="width:10px;"> '.$p['likes'].'</a>';
-                      if ($userid == $loggedInUserId) {
-                        $posts .='<a href="profile.php?deletepost&username='.$username.'&postid='.$p['id'].'" style="float:right"><i class="tiny grey-text material-icons">delete</i></a>';
-                    }
-                    $posts .='</div>
-                </div>
-            </div>
-            </a>
-            ';
-        }
     }
     return $posts;
 }
@@ -173,11 +148,9 @@ public static function  displayNewsFeedPosts($username, $loggedInUserId) {
     foreach($dbposts as $p) {
         $userid=$p['user_id'];
         $postowner=$p['username'];
-
+        $comments = DB::query('SELECT count(id) FROM comments WHERE post_id=:pid',array(':pid'=>$p['id']))[0]['count(id)'];
         $firstname= DB::query('SELECT firstname FROM users WHERE username=:username', array(':username'=>$postowner))[0]['firstname'];
         $lastname=DB::query('SELECT lastname FROM users WHERE username=:username', array(':username'=>$postowner))[0]['lastname'];
-
-        if (!DB::query('SELECT post_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$p['id'], ':userid'=>$userid))) {
            $posts .= '<a href="post.php?username='.$postowner.'&postid='.$p['id'].'">
             <div class="col s2" style="height:400px;">
               <div class="card hoverable grey lighten-5 z-depth-1">
@@ -198,38 +171,12 @@ public static function  displayNewsFeedPosts($username, $loggedInUserId) {
                     }
                     
                   $posts.='<div class="card-action">
-                      <a class="grey-text darken-4" href="index.php?like&postid='.$p['id'].'"><img src="images/heart-empty.png" style="width:10px;"> '.$p['likes'].'</a>
+                      <img src="images/heart.png" style="width:10px;"> '.$p['likes'].'
+                      <i class="tiny grey-text material-icons" style="margin-left: 95px;">comment</i> '.$comments.'
                       </div>
                 </div>
             </div>
            </a>';
-        } else {
-           $posts .= '<a href="post.php?username=username='.$postowner.'&postid='.$p['id'].'">
-           <div class="col s2" style="height:400px;">
-              <div class="card hoverable grey lighten-5 z-depth-1">
-                  <div style="height:200px;" class="card-image responsive-img">';
-              // echo $p['postimg'];
-                    if ($p['postimg']!="") {
-                        // echo $p['postimg'];
-                        $posts.='<img style="width:180px; height:200px; margin:0 auto;padding-top:10px;" src="'.$p['postimg'].'">';
-                    }else{
-                        $posts.='<img style="width:180px; height:200px;margin:0 auto; padding-top:10px;" src="images/nopreview.png">';
-                    }
-                    $posts.='</div>
-                    <h6 style="text-align:center;" class="grey-text text darken-4">by <b><a class="orange-text text darken-4" href="profile.php?username='.$postowner.'">'.$firstname.' '.$lastname.'</a></b></h6>';
-                    if ($p['body']!="") {
-                       $posts.='<div class="card-content">
-                      <p>'.self::link_add($p['body']).'</p>
-                  </div>';
-                    }
-                    
-                  $posts.='<div class="card-action">
-                      <a class="grey-text darken-4" href="index.php?like&postid='.$p['id'].'"><img src="images/heart.png" style="width:10px;"> '.$p['likes'].'</a>
-                      </div>
-                </div>
-            </div>
-           </a>';
-        }
     }
     return $posts;
 }

@@ -12,6 +12,7 @@ $postimg = "";
 $postbody = "";
 $likes = "";
 $ownerid = "";
+$likeStatus="";
 if (isset($_GET['username'])) {
 	$userid = Login::isLoggedIn();
 	if (DB::query('SELECT username FROM users WHERE id=:userid', array(':userid'=>$userid))) {
@@ -35,10 +36,16 @@ if (isset($_GET['username'])) {
 			$ownerid = $post[0]['user_id'];
 		}
 	}
+	if (!DB::query('SELECT user_id FROM post_likes WHERE post_id=:postid AND user_id=:userid', array(':postid'=>$pid, ':userid'=>$userid))) {
+		$likeStatus='like';
+	}
 	if (isset($_POST['comment'])) {
 		$commentBody= $_POST['comment'];
-		// echo $commentBody;
 		Comment::createComment($commentBody, $pid, $userid);
+	}
+	if (isset($_POST['like'])) {
+		$likeStatus = Post::likePost($pid, $userid);
+		// echo $likeStatus;
 	}
 }else{
 	die("<img align='middle' style='padding: 100px 400px;' src='images/404.jpg'>");
@@ -85,9 +92,15 @@ if (isset($_GET['username'])) {
 						<p><?php echo $postbody;?></p>
 					</div>
 					<div class="card-action">
-						<a href="#"><img src="images/heart-empty.png" style="width:20px; margin-left: 80px;"> Like</a>
+						<?php
+						if ($likeStatus=='like') {
+							echo '<a href="post.php?like&username='.$username.'&postid='.$pid.'"><img src="images/heart-empty.png" style="width:20px; margin-left: 60px;"> Like</a>';
+						}else{
+							echo '<a href="post.php?like&username='.$username.'&postid='.$pid.'"><img src="images/heart.png" style="width:20px; margin-left: 60px;"> Unlike</a>';
+						}
+						?>
 					<!-- Modal Trigger -->
-					<a class="modal-trigger" href="#modal1"><i class="material-icons" style="color: grey;margin-left: 120px; ">comment</i> Comment</a>
+					<a class="modal-trigger" href="#modal1"><i class="material-icons" style="color: grey;margin-left: 110px; ">comment</i> Comment</a>
 					</div>
 				</div>
 			</div>

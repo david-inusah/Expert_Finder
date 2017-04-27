@@ -87,9 +87,9 @@ if (isset($_POST['post'])) {
     Image::uploadImage('postimg', "UPDATE posts SET postimg=:postimg WHERE id=:postid", array(':postid'=>$postid));
   }
 }
-if (isset($_GET['postid']) && isset($_GET['like'])) {
-  Post::likePost($_GET['postid'], $followerid);
-}
+// if (isset($_GET['postid']) && isset($_GET['like'])) {
+//   Post::likePost($_GET['postid'], $followerid);
+// }
 $posts = Post::displayProfilePagePosts($userid, $username, $followerid);
 } else {
   die("<img align='middle' style='padding: 100px 400px;' src='images/404.jpg'>");

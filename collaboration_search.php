@@ -45,7 +45,7 @@ if (isset($_POST['collaboration_searchbox'])) {
 						if (strlen($profileimg)==0) {
 							$results.= '<img style="width:200px; margin:0 auto;" src="images/profile.png"></a>';
 						}else{
-							$results.= '<img style="width:200px; height:200px; margin:0 auto;" src="'.$profileimg.'"></a>';
+							$results.= '<img style="width:200px; height:200px; margin:0 auto;" class="circle" src="'.$profileimg.'"></a>';
 						}
 						$results.='</div>
 						<div class="card-content" style="text-align:center;">

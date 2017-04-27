@@ -46,7 +46,7 @@ if (isset($_GET['rejected'])) {
     }
 }
 if (DB::query('SELECT * FROM notifications WHERE receiver=:userid', array(':userid'=>$userid))) {
-    $notification = DB::query('SELECT * FROM notifications WHERE receiver=:userid AND seen=0 ORDER BY id DESC', array(':userid'=>$userid));
+    $notification = DB::query('SELECT * FROM notifications WHERE receiver=:userid ORDER BY id DESC', array(':userid'=>$userid));
     foreach($notification as $n) {
         if ($n['type'] == 1) {
             $senderid = DB::query('SELECT id FROM users WHERE id=:senderid', array(':senderid'=>$n['sender']))[0]['id'];
